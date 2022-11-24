@@ -5,45 +5,35 @@ import { z } from 'zod'
 
 const PostSchema = z.object({
   title: z.string(),
-  content: z.string().nullable(),
+  content: z.string().optional(),
 })
 
-type Post = z.infer<typeof PostSchema>
-//    ^ type Post = { 
-//          title: string;
-//          content: string | null;
-//        } 
-
 export const action = async ({ request }: ActionArgs) => {
-
   const formData = await request.formData()
-  const title = formData.get('title')
-  const content = formData.get('content')
+  const fieldData = Object.fromEntries(formData)
+  const parsedPostData = PostSchema.safeParse(fieldData)
 
-  if (
-    typeof title !== 'string' ||
-    typeof content !== 'string'
-  ) {
-    throw Error("Oops, one of the form values was incorrect")
+  if (!parsedPostData.success) {
+    throw Error("Oops, something went wrong")
   }
 
+  const data = parsedPostData.data
 
   const post = await db.post.create({
     data: {
-      title: title,
-      content,
+      title: data.title,
+      content: data.content,
     }
   })
 
   return redirect(`/p/${post.id}`)
 }
+
 export default function Create() {
 
   return (
     <div>
       <h1>TS Meetup Create</h1>
-
-
       <form method="post">
         <div>
           <label>

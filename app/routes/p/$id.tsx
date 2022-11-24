@@ -6,7 +6,11 @@ import type { LoaderArgs } from "@remix-run/node";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { id } = params
-  const post = await db.post.findUnique({ where: { id: Number(id) } })
+  const post = await db.post.findUnique({
+    where: {
+      id: Number(id)
+    }
+  })
 
   /**
    * type narrowing 
@@ -25,7 +29,7 @@ export default function Post() {
       <Link to='/'>&larr; All posts</Link>
       <h1>{post.title}</h1>
       <p>{post.content}</p>
-      <p>Published: {post.published}</p>
+      <span>Createdat: {post.createdAt}</span>
     </div>
   );
 }
