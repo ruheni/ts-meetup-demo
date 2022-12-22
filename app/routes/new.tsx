@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 const PostSchema = z.object({
   title: z.string(),
-  content: z.string().optional(),
+  body: z.string().optional(),
 })
 
 export const action = async ({ request }: ActionArgs) => {
@@ -22,7 +22,7 @@ export const action = async ({ request }: ActionArgs) => {
   const post = await db.post.create({
     data: {
       title: data.title,
-      content: data.content,
+      body: data.body,
     }
   })
 
@@ -42,7 +42,7 @@ export default function Create() {
         </div>
         <div>
           <label>
-            Content: <textarea name="content" />
+            Content: <textarea name="body" />
           </label>
         </div>
         <div>
